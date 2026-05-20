@@ -7,7 +7,6 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    # Si ya está autenticado, redirigir según rol
     if current_user.is_authenticated:
         if current_user.role == 'organizer':
             return redirect(url_for('events.dashboard'))
@@ -31,7 +30,6 @@ def login():
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    # Si ya está autenticado, no tiene sentido registrarse
     if current_user.is_authenticated:
         return redirect(url_for('events.catalog'))
 
@@ -41,12 +39,10 @@ def register():
         password = request.form.get('password')
         role     = request.form.get('role')
 
-        # Validar que el rol sea válido
         if role not in ('organizer', 'attendee'):
             flash('Rol inválido. Elige organizador o asistente.', 'error')
             return render_template('auth/register.html')
 
-        # Verificar duplicados
         if User.query.filter_by(email=email).first():
             flash('El correo ya está registrado.', 'error')
             return render_template('auth/register.html')
@@ -55,7 +51,6 @@ def register():
             flash('El nombre de usuario ya existe.', 'error')
             return render_template('auth/register.html')
 
-        # Crear usuario
         new_user = User(username=username, email=email, role=role)
         new_user.set_password(password)
         db.session.add(new_user)
