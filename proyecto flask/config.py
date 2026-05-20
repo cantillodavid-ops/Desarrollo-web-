@@ -8,13 +8,9 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    # Formato: mysql+pymysql://usuario:contraseña@host/nombre_base_datos
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
         'mysql+pymysql://root:@localhost/gestion_eventos'
-        #                 ^^^^  ^         ^^^^^^^^^^^^^^^^
-        #                 user  password  nombre de la BD en XAMPP
-        # Si pusiste contraseña en XAMPP: 'mysql+pymysql://root:TU_CLAVE@localhost/gestion_eventos'
     )
 
 
