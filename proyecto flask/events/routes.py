@@ -6,9 +6,6 @@ from decorators import role_required
 
 events_bp = Blueprint('events', __name__)
 
-
-# ─── Catálogo público ────────────────────────────────────────────────────────
-
 @events_bp.route('/catalog')
 def catalog():
     """Lista todos los eventos. Accesible sin login."""
@@ -27,9 +24,6 @@ def catalog():
                            categories=categories,
                            selected_category=category)
 
-
-# ─── Dashboard del organizador ───────────────────────────────────────────────
-
 @events_bp.route('/dashboard')
 @login_required
 @role_required('organizer')
@@ -38,9 +32,6 @@ def dashboard():
     my_events = Event.query.filter_by(organizer_id=current_user.id)\
                            .order_by(Event.date.asc()).all()
     return render_template('events/dashboard.html', my_events=my_events)
-
-
-# ─── Detalle de evento ───────────────────────────────────────────────────────
 
 @events_bp.route('/event/<int:event_id>')
 def detail(event_id):
@@ -59,9 +50,6 @@ def detail(event_id):
                            event=event,
                            already_registered=already_registered)
 
-
-# ─── Crear evento ────────────────────────────────────────────────────────────
-
 @events_bp.route('/event/new', methods=['GET', 'POST'])
 @login_required
 @role_required('organizer')
@@ -74,7 +62,6 @@ def create_event():
         capacity    = request.form.get('capacity')
         category    = request.form.get('category')
 
-        # Validaciones básicas
         if not all([title, description, date_str, capacity, category]):
             flash('Todos los campos son obligatorios.', 'error')
             return render_template('events/form.html', event=None)
@@ -101,9 +88,6 @@ def create_event():
 
     return render_template('events/form.html', event=None)
 
-
-# ─── Editar evento ───────────────────────────────────────────────────────────
-
 @events_bp.route('/event/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
 @role_required('organizer')
@@ -111,7 +95,6 @@ def edit_event(event_id):
     """Editar un evento existente. Solo el organizador dueño puede hacerlo."""
     event = Event.query.get_or_404(event_id)
 
-    # Verificar que el evento pertenece al organizador actual
     if event.organizer_id != current_user.id:
         flash('No tienes permiso para editar este evento.', 'error')
         return redirect(url_for('events.dashboard'))
@@ -133,7 +116,6 @@ def edit_event(event_id):
             flash('Formato de fecha inválido.', 'error')
             return render_template('events/form.html', event=event)
 
-        # Validar que la nueva capacidad no sea menor a los inscritos actuales
         if int(capacity) < event.spots_taken:
             flash(f'La capacidad no puede ser menor a los inscritos actuales ({event.spots_taken}).', 'error')
             return render_template('events/form.html', event=event)
@@ -149,9 +131,6 @@ def edit_event(event_id):
         return redirect(url_for('events.dashboard'))
 
     return render_template('events/form.html', event=event)
-
-
-# ─── Eliminar evento ─────────────────────────────────────────────────────────
 
 @events_bp.route('/event/<int:event_id>/delete', methods=['POST'])
 @login_required
@@ -170,9 +149,6 @@ def delete_event(event_id):
     flash('Evento eliminado.', 'info')
     return redirect(url_for('events.dashboard'))
 
-
-# ─── Inscribirse a un evento ─────────────────────────────────────────────────
-
 @events_bp.route('/event/<int:event_id>/register', methods=['POST'])
 @login_required
 @role_required('attendee')
@@ -180,7 +156,6 @@ def register_event(event_id):
     """Un asistente se inscribe a un evento."""
     event = Event.query.get_or_404(event_id)
 
-    # Verificar si ya está inscrito
     existing = Registration.query.filter_by(
         user_id=current_user.id,
         event_id=event_id
@@ -200,9 +175,6 @@ def register_event(event_id):
 
     flash(f'Te has inscrito a "{event.title}" exitosamente.', 'success')
     return redirect(url_for('events.detail', event_id=event_id))
-
-
-# ─── Cancelar inscripción ────────────────────────────────────────────────────
 
 @events_bp.route('/event/<int:event_id>/unregister', methods=['POST'])
 @login_required
