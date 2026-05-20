@@ -1,0 +1,1 @@
+"""Events blueprint – CRUD de eventos e inscripciones."""

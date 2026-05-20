@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Eventos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('events.catalog') }}">Catálogo</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('users.profile') }}">Mi Perfil</a>
+            {% if current_user.role == 'organizer' %}
+                <a href="{{ url_for('events.dashboard') }}">Panel Organizador</a>
+            {% endif %}
+            <a href="{{ url_for('auth.logout') }}">Cerrar Sesión</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register') }}">Registro</a>
+        {% endif %}
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

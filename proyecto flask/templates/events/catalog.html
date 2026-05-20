@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Eventos Disponibles</h1>
+
+<!-- Filtro por categoría -->
+<form method="GET">
+    <select name="category" onchange="this.form.submit()">
+        <option value="">Todas las categorías</option>
+        {% for cat in categories %}
+            <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>
+                {{ cat }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+<div class="events-grid">
+    {% for event in events %}
+        <div class="event-card">
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.category }} - {{ event.date.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p>Cupos: {{ event.spots_taken }} / {{ event.capacity }}</p>
+            {% if event.is_full %}
+                <span>Sin cupos</span>
+            {% endif %}
+            <a href="{{ url_for('events.detail', event_id=event.id) }}">Ver Detalles</a>
+        </div>
+    {% else %}
+        <p>No hay eventos disponibles.</p>
+    {% endfor %}
+</div>
+{% endblock %}

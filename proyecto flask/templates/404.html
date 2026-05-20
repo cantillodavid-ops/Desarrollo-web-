@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align: center; margin-top: 50px;">
+    <h1>404 - Página no encontrada</h1>
+    <p>Lo sentimos, la dirección que buscas no existe.</p>
+    <a href="{{ url_for('events.catalog') }}">Volver al inicio</a>
+</div>
+{% endblock %}

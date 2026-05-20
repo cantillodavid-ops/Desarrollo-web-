@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mi Perfil</h1>
+<p><strong>Usuario:</strong> {{ user.username }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Rol:</strong> {{ 'Organizador' if user.role == 'organizer' else 'Asistente' }}</p>
+<p><strong>Bio:</strong> {{ user.bio if user.bio else 'Sin bio aún.' }}</p>
+
+<a href="{{ url_for('users.edit_profile') }}">Editar Perfil</a>
+
+{% if user.role == 'attendee' %}
+    <h2>Mis Inscripciones</h2>
+    {% if registrations %}
+        <table>
+            <tr>
+                <th>Evento</th>
+                <th>Fecha del Evento</th>
+                <th>Inscrito el</th>
+                <th></th>
+            </tr>
+            {% for reg in registrations %}
+                <tr>
+                    <td>{{ reg.event.title }}</td>
+                    <td>{{ reg.event.date.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{{ reg.registered_at.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        <a href="{{ url_for('events.detail', event_id=reg.event.id) }}">Ver evento</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Aún no te has inscrito a ningún evento. <a href="{{ url_for('events.catalog') }}">Ver catálogo</a></p>
+    {% endif %}
+{% endif %}
+{% endblock %}

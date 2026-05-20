@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{% if event %}Editar{% else %}Crear{% endif %} Evento</h1>
+
+<form method="POST">
+    <label>Título</label>
+    <input type="text" name="title"
+           value="{{ event.title if event else '' }}"
+           placeholder="Título" required>
+
+    <label>Descripción</label>
+    <textarea name="description" placeholder="Descripción" required>{{ event.description if event else '' }}</textarea>
+
+    <label>Fecha y hora</label>
+    <!-- Pre-llena la fecha al editar -->
+    <input type="datetime-local" name="date"
+           value="{{ event.date.strftime('%Y-%m-%dT%H:%M') if event else '' }}" required>
+
+    <label>Cupo Máximo</label>
+    <input type="number" name="capacity" min="1"
+           value="{{ event.capacity if event else '' }}"
+           placeholder="Cupo Máximo" required>
+
+    <label>Categoría</label>
+    <select name="category">
+        {% for cat in ['Tecnología', 'Música', 'Cultura', 'Bienestar', 'Deporte', 'Educación', 'Otro'] %}
+            <option value="{{ cat }}"
+                {% if event and event.category == cat %}selected{% endif %}>
+                {{ cat }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Guardar Evento</button>
+    <a href="{{ url_for('events.dashboard') }}">Cancelar</a>
+</form>
+{% endblock %}

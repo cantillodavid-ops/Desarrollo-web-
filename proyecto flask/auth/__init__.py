@@ -1,0 +1,1 @@
+"""Auth blueprint – login, logout, registro."""

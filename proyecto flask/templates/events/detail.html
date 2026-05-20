@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ event.title }}</h1>
+<p>{{ event.description }}</p>
+<ul>
+    <li><strong>Fecha:</strong> {{ event.date.strftime('%d/%m/%Y %H:%M') }}</li>
+    <li><strong>Categoría:</strong> {{ event.category }}</li>
+    <!-- spots_taken usa el property del modelo, correcto para relaciones lazy dynamic -->
+    <li><strong>Cupos:</strong> {{ event.spots_taken }} / {{ event.capacity }}</li>
+    <li><strong>Cupos disponibles:</strong> {{ event.spots_left }}</li>
+</ul>
+
+{% if current_user.is_authenticated and current_user.role == 'attendee' %}
+    {% if already_registered %}
+        <p>✅ Ya estás inscrito en este evento.</p>
+        <form action="{{ url_for('events.unregister_event', event_id=event.id) }}" method="POST">
+            <button type="submit">Cancelar Inscripción</button>
+        </form>
+    {% elif event.is_full %}
+        <button disabled>Sin cupos disponibles</button>
+    {% else %}
+        <form action="{{ url_for('events.register_event', event_id=event.id) }}" method="POST">
+            <button type="submit">Inscribirme</button>
+        </form>
+    {% endif %}
+{% elif not current_user.is_authenticated %}
+    <p><a href="{{ url_for('auth.login') }}">Inicia sesión</a> para inscribirte.</p>
+{% endif %}
+
+<br>
+<a href="{{ url_for('events.catalog') }}">← Volver al catálogo</a>
+{% endblock %}

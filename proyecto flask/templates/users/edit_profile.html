@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Editar Perfil</h1>
+
+<form method="POST">
+    <label>Nombre de usuario</label>
+    <input type="text" name="username" value="{{ user.username }}" required>
+
+    <label>Bio</label>
+    <textarea name="bio" placeholder="Cuéntanos algo sobre ti...">{{ user.bio }}</textarea>
+
+    <button type="submit">Guardar Cambios</button>
+    <a href="{{ url_for('users.profile') }}">Cancelar</a>
+</form>
+{% endblock %}

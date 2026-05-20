@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mis Eventos Creados</h1>
+<a href="{{ url_for('events.create_event') }}">+ Crear Nuevo Evento</a>
+
+<table>
+    <tr>
+        <th>Título</th>
+        <th>Fecha</th>
+        <th>Inscritos</th>
+        <th>Acciones</th>
+    </tr>
+    {% for event in my_events %}
+        <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.date.strftime('%d/%m/%Y %H:%M') }}</td>
+            <!-- spots_taken usa el property del modelo, no |length sobre lazy dynamic -->
+            <td>{{ event.spots_taken }} / {{ event.capacity }}</td>
+            <td>
+                <a href="{{ url_for('events.detail', event_id=event.id) }}">Ver</a>
+                <a href="{{ url_for('events.edit_event', event_id=event.id) }}">Editar</a>
+                <form action="{{ url_for('events.delete_event', event_id=event.id) }}" method="POST"
+                      onsubmit="return confirm('¿Eliminar este evento?')">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="4">No has creado ningún evento aún.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

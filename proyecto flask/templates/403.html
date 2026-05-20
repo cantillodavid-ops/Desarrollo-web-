@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align: center; margin-top: 50px;">
+    <h1>403 - Acceso Denegado</h1>
+    <p>No tienes permiso para ver esta página.</p>
+    <a href="{{ url_for('events.catalog') }}">Volver al inicio</a>
+</div>
+{% endblock %}
